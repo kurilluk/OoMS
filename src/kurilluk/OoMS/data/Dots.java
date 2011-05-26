@@ -33,7 +33,7 @@ public class Dots {
 
 	private ArrayList<Dot> err1 = new ArrayList<Dot>(); // intersect
 	private ArrayList<Dot> err2 = new ArrayList<Dot>(); // no neighbors
-	
+
 	// CONSTRUCTOR
 	public Dots(String fileName) throws IOException {
 		Read(fileName);
@@ -109,39 +109,111 @@ public class Dots {
 	public void Manufacture(String fileName) {
 		// sort list
 		sortDot();
-		// remove and add neighbors / manufacture test (control),remove no neighbors
-		analyzeDots();
+		// remove and add neighbors / manufacture test (control),remove no
+		// neighbors
+		createBlocks();
+		analyzeBlockDots();
+		// analyzeDots();
 		// print to file
-		printToFile(fileName);
-		
+		printToFiles(fileName);
+
 	}
-	
-	private void printToFile(String fileName){
-		int pis = fileName.length();
-		fileName = fileName.substring(0, pis-4);
-//		String[] name = fileName.split(".");
-//		if(name.length > 0){
-//			System.out.println(name[1]+".3dg");
-//		}else{
-//			System.out.println(fileName +".3dg");
-//		}
-		
-		try{
-			File f = new File(fileName +".3dg");
-			FileWriter fw = new FileWriter(f);
-			BufferedWriter bw = new BufferedWriter(fw);
-			for(Dot d : dots){
-				bw.write(d.toPrint());
-			}
-			bw.close();
+
+	private void createBlocks() {
+		for (Dot d : dots) {
+			Block.DotToBlock(d);
 		}
-		catch(IOException e){
-			//TODO ioExcetption
+	}
+
+	private void printToFiles(String fileName) {
+		int pis = fileName.length();
+		fileName = fileName.substring(0, pis - 4);
+		// String[] name = fileName.split(new String("."));
+		// if(name.length > 0){
+		// System.out.println(name[1]+".3dg");
+		// }else{
+		// System.out.println(fileName +".3dg");
+		// }
+
+		try {
+			for (Block b : Block.GetBlocks()) {
+				File f = new File(fileName + "_" + b.getIndex() + ".3dg");
+				FileWriter fw = new FileWriter(f);
+				BufferedWriter bw = new BufferedWriter(fw);
+
+				for (Dot d : b.getDots()) {
+					bw.write(d.toPrintBlock());
+				}
+				bw.close();
+			}
+		} catch (IOException e) {
+			// TODO ioExcetption
 			System.out.println("File write error.");
 		}
 	}
 
-	//add neighbor to dot and test intersection
+	private void printToFile(String fileName) {
+		int pis = fileName.length();
+		fileName = fileName.substring(0, pis - 4);
+		// String[] name = fileName.split(new String("."));
+		// if(name.length > 0){
+		// System.out.println(name[1]+".3dg");
+		// }else{
+		// System.out.println(fileName +".3dg");
+		// }
+
+		try {
+			File f = new File(fileName + ".3dg");
+			FileWriter fw = new FileWriter(f);
+			BufferedWriter bw = new BufferedWriter(fw);
+			for (Dot d : dots) {
+				bw.write(d.toPrint());
+			}
+			bw.close();
+		} catch (IOException e) {
+			// TODO ioExcetption
+			System.out.println("File write error.");
+		}
+	}
+
+	private void analyzeBlockDots() {
+		// foreach dot in block //pre blok je to kratsie, mensie pole na prezeranie..
+		//for (Block b : Block.GetBlocks()) {
+			for (int i = 0; i < dots.size(); i++) {
+				// for 1st layer add neighbors
+				if (dots.get(i).Zl() == 0) {
+					dots.get(i).AddNeighbor(new PVector(0, 0, -1));
+					continue;
+				}
+
+				// loop of finding and adding neighbors (tests intersects)
+				int j = 0;
+				while (dots.get(i).Zl() > dots.get(j).Zl()) {
+					// if (dots[i].Z < dots[j].Z + rozsah)
+					// {
+					double distance = dots.get(i).DistanceTo(dots.get(j));
+					if (distance <= diameter + 1 && distance > diameter - 2) {
+						dots.get(i).AddNeighbor(dots.get(j), dots.get(i));
+					}
+					if (distance < diameter - 2) {
+						// error intersection
+						this.err1.add(dots.get(i));
+					}
+
+					// }
+					j++;
+				}
+				if (dots.get(i).neiCount() < 1) {
+					this.err2.add(dots.get(i));
+					dots.remove(i);
+					i -= 1;
+				}
+
+			}
+		//}
+	}
+
+	// add neighbor to dot and test intersection
 	private void analyzeDots() {
 		// foreach dot in block
 		for (int i = 0; i < dots.size(); i++) {
@@ -168,12 +240,11 @@ public class Dots {
 				// }
 				j++;
 			}
-			if (dots.get(i).neiCount() < 1)
-            {
-                this.err2.add(dots.get(i));
-                dots.remove(i);
-                i -= 1;
-            }
+			if (dots.get(i).neiCount() < 1) {
+				this.err2.add(dots.get(i));
+				dots.remove(i);
+				i -= 1;
+			}
 
 		}
 	}

@@ -18,6 +18,7 @@ import kurilluk.OoMS.data.property;
 public class Dot {
 	 //FIELDS
     private PVector pos;
+    private PVector local;
     private ArrayList<PVector> neighbors = new ArrayList<PVector>();
     
     private int ID = -1; //0 = fix, 1 = odd, 2 = even, 3 = newGenerated
@@ -35,6 +36,11 @@ public class Dot {
    // public float getX()
     
     //METHODS
+    public void SetLocal(Block b){
+    	float z = pos.z - b.getLocalZ();
+    	this.local = new PVector(pos.x,pos.y,z);
+    }
+    
     private void getID()
     {
         int even = 82;
@@ -65,6 +71,10 @@ public class Dot {
     
     public double getVal(){
     	return this.value;
+    }
+    
+    public float Zl(){
+    	return this.local.z;
     }
     
     public float Z(){
@@ -113,8 +123,14 @@ public class Dot {
     }
 
     public String toPrint(){
-    	String print = "";
-    	for(PVector v: neighbors){print += v.toString() + ";";}
-    	return pos.toString() + "\n" + print;
+    	StringBuffer print = new StringBuffer();
+    	for(PVector v: neighbors){print.append(" "+ v.x +":"+ v.y +":"+v.z+ " ;");}
+    	return pos.x +":"+pos.y +":"+pos.z+"\n" + print;
+    }
+    
+    public String toPrintBlock(){
+    	StringBuffer print = new StringBuffer();
+    	for(PVector v: neighbors){print.append(" "+ v.x +":"+ v.y +":"+v.z+ " ;");}
+    	return pos.x +":"+pos.y +":"+local.z+"\n" + print;
     }
 }
