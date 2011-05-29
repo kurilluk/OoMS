@@ -5,10 +5,15 @@
 package kurilluk.OoMS;
 
 import java.io.*;
+import java.util.ArrayList;
 
-import com.sun.corba.se.impl.orb.ParserTable.TestBadServerIdHandler;
+//import com.sun.corba.se.impl.orb.ParserTable.TestBadServerIdHandler;
 
 import kurilluk.OoMS.data.*;
+import kurilluk.OoMS.preview.*;
+import kurilluk.OoMS.process.Generate;
+import processing.core.*;
+import kurilluk.OoMS.type.Dot;
 import kurilluk.OoMS.type.TestBlock;
 
 /**
@@ -18,6 +23,9 @@ import kurilluk.OoMS.type.TestBlock;
 
 public class gen {
 
+	// FIELDS
+	private static String[] args;
+
 	/**
 	 * @param args
 	 * @throws FileNotFoundException
@@ -26,36 +34,70 @@ public class gen {
 
 	// TODO help option
 
-	public static void main(String[] args) {
+	public static void main(String[] arguments) {
+
 		try {
-			// String fileName = args[0];
-			Dots d2d = new Dots(args[0]);
-			testDots.WriteAll(d2d.GetDots());
-			// generate to 3d
-			// Dots d3d = d2d.Generate3dGrid();
-			// testDots.WriteAll(d3d.GetDots());
-			// TODO compile to robot
-			// if args[1]exit uste it else split name and use it
-			// d3d.Manufacture(args[0]); //generate and print to file
-			// testDots.PrintAll(d3d.GetDots());
-			// TestBlock.Test();
-			if (args.length > 1) {
-				if (args[1].equals("-v")) {
-					//TODO preview
-				}
+			// load arguments
+			args = arguments;
+
+			// TODO analyze file type and choose reader
+			// read 2dg file
+			Dots.ReadIt(args[0]);
+			// or read 3dg file
+			// TODO ReadIt 3dg
+
+			// argument Generate
+			// TODO only if 2dg file was read
+			if (isArgs("-g")) {
+				// generate 2dg to 3dg
+				Dots.From2dgTo3dg();
 			}
+
+			// argument Manufacture
+			if (isArgs("-m")) {
+				// compile to robot
+				Dots.Manufacture();
+				// d3d.Manufacture(args[0]); // generate and print to file
+			}
+
+			// argument Write to file
+			if (isArgs("-f")) {
+
+			}
+
+			// argument Preview
+			if (isArgs("-v")) {
+				kurilluk.OoMS.preview.AppletWindow.main(null);
+			}
+
+			// argument Test
+			if (isArgs("-t")) {
+				tests();
+			}
+
+			// catch block
 		} catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println("gen: Invalid option");
 		} catch (IOException e) {
-			System.out.println("gen: No such 2dg file: " + args[0]);
+			System.out.println("gen: No such 2dg or 3dg file: " + args[0]);
 		}
 
-		// finally{
-		// //br.close();
-		// //info
-		// //System.out.println("gen: argument was: "+ args[0]);
-		// }
+	}
 
+	private static void tests() {
+		System.out.println("test output:");
+		//testDots.WriteAll(Dots.Data());
+		//testDots.PrintAll(Dots.Data());
+		Block.Print();
+	}
+
+	private static boolean isArgs(String arg) {
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals(arg)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
