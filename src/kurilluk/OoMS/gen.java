@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import kurilluk.OoMS.data.*;
 import kurilluk.OoMS.preview.*;
 import kurilluk.OoMS.process.Generate;
+import kurilluk.OoMS.process.IO;
 import processing.core.*;
 import kurilluk.OoMS.type.Dot;
 import kurilluk.OoMS.type.TestBlock;
@@ -62,12 +63,12 @@ public class gen {
 
 			// argument Write to file
 			if (isArgs("-f")) {
-
+				IO.PrintToFiles(args[0]);
 			}
 
 			// argument Preview
 			if (isArgs("-v")) {
-				kurilluk.OoMS.preview.AppletWindow.main(null);
+				kurilluk.OoMS.preview.AppletWindow.run(null);
 			}
 
 			// argument Test
@@ -86,7 +87,7 @@ public class gen {
 
 	private static void tests() {
 		System.out.println("test output:");
-		//testDots.WriteAll(Dots.Data());
+		testDots.WriteAll(Dots.Data());
 		//testDots.PrintAll(Dots.Data());
 		Block.Print();
 	}

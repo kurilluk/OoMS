@@ -60,7 +60,7 @@ public class Dot {
 
 	// TODO pozor zmena value! ========================================
 	public void AddProperties(String[] property) {
-		this.value = 1 * Double.parseDouble(property[0]);
+		this.value = Math.round(Double.parseDouble(property[0]));
 	}
 
 	public double getVal() {
@@ -83,6 +83,13 @@ public class Dot {
 		return (int) this.grid.x;
 	}
 	
+	public float Xl() {
+		return this.local.x;
+	}
+	
+	public float Yl() {
+		return this.local.y;
+	}
 	
 	public float Zl() {
 		return this.local.z;
@@ -105,7 +112,7 @@ public class Dot {
 	}
 
 	public void AddNeighbor(Dot v, Dot u) {
-		// TODO kontrola smeru vektora uv,vu.
+		
 		this.neighbors.add(PVector.sub(v.pos, u.pos));
 	}
 
@@ -121,6 +128,11 @@ public class Dot {
 		return new PVector(pos.x, pos.y, pos.z);
 		// return this.pos;
 	}
+	
+	public PVector getNewLocalPoint() {
+		return new PVector(local.x, local.y, pos.z);
+		// return this.pos;
+	}
 
 	public int posID() {
 		return this.ID;
@@ -132,6 +144,11 @@ public class Dot {
 
 	@Override
 	public String toString() {
+
+		return pos.toString() + "\n" + value + " ID:" + ID ;
+	}
+	
+	public String tooString() {
 		StringBuffer print = new StringBuffer();
 		for (PVector v : neighbors) {
 			print.append(" " + v.x + ":" + v.y + ":" + v.z + " ;");
@@ -150,8 +167,21 @@ public class Dot {
 	public String toPrintBlock() {
 		StringBuffer print = new StringBuffer();
 		for (PVector v : neighbors) {
-			print.append(" " + v.x + ":" + v.y + ":" + v.z + " ;");
+			float vx,vy,vz;
+			vx = v.x*1000;
+			vx = Math.round(vx);
+			vx /= 1000;
+			
+			vy = v.y*1000;
+			vy = Math.round(vy);
+			vy /= 1000;
+			
+			vz = v.z*1000;
+			vz = Math.round(vz);
+			vz /= 1000;
+			
+			print.append(" " + vx + ":" + vy + ":" + vz + " ;");
 		}
-		return pos.x + ":" + pos.y + ":" + local.z + "\n" + print;
+		return local.x + ":" + local.y + ":" + local.z + "\n" + print +"\n";
 	}
 }
