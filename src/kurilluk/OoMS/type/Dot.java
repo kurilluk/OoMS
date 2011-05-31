@@ -113,7 +113,7 @@ public class Dot {
 
 	public void AddNeighbor(Dot v, Dot u) {
 		
-		this.neighbors.add(PVector.sub(v.pos, u.pos));
+		this.neighbors.add(PVector.sub(v.local, u.local));
 	}
 
 	public float DistanceTo(Dot n) {
