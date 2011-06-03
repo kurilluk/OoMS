@@ -26,6 +26,7 @@ public class gen {
 
 	// FIELDS
 	private static String[] args;
+	public static String name;
 
 	/**
 	 * @param args
@@ -40,6 +41,7 @@ public class gen {
 		try {
 			// load arguments
 			args = arguments;
+			name =args[0];
 
 			// TODO analyze file type and choose reader
 			// read 2dg file
@@ -60,14 +62,25 @@ public class gen {
 				Dots.Manufacture();
 				// d3d.Manufacture(args[0]); // generate and print to file
 			}
-
-			// argument Write to file
-			if (isArgs("-f")) {
+			// argument makePicture
+			if (isArgs("-pf")) {
+				//AppletPicture ap = new AppletPicture();
+				//ap.Open();
+				kurilluk.OoMS.preview.AppletPicture.run(null);
 				IO.PrintToFiles(args[0]);
+				//kurilluk.OoMS.preview.AppletPicture.exit();
+				System.exit(0);
 			}
+
+//			// argument Write to file
+//			if (isArgs("-f")) {
+//				IO.PrintToFiles(args[0]);
+//			}
 
 			// argument Preview
 			if (isArgs("-v")) {
+//				AppletWindow aw = new AppletWindow();
+//				aw.Open();
 				kurilluk.OoMS.preview.AppletWindow.run(null);
 			}
 
@@ -75,6 +88,8 @@ public class gen {
 			if (isArgs("-t")) {
 				tests();
 			}
+			
+
 
 			// catch block
 		} catch (ArrayIndexOutOfBoundsException e) {
